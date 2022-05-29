@@ -10,16 +10,18 @@ namespace json {
 
 		Node LoadArray(istream& input) {
 			Array result;
-			
+			auto it = std::istreambuf_iterator<char>(input);
+			auto end = std::istreambuf_iterator<char>();
+			if (it==end) {
+				throw ParsingError("Array parsing error");
+			}
 			for (char c; input >> c && c != ']';) {
 				if (c != ',') {
 					input.putback(c);
 				}
 				result.push_back(LoadNode(input));
 			}
-			if (result.empty()) {
-				throw ParsingError("Array parsing error");
-			}
+
 			return Node(move(result));
 		}
 
@@ -93,9 +95,6 @@ namespace json {
 		}
 
 		Node LoadString(istream& input) {
-			/*string line;
-			getline(input, line, '"');
-			return Node(move(line));*/
 			auto it = std::istreambuf_iterator<char>(input);
 			auto end = std::istreambuf_iterator<char>();
 			std::string s;
@@ -156,7 +155,11 @@ namespace json {
 
 		Node LoadDict(istream& input) {
 			Dict result;
-
+			auto it = std::istreambuf_iterator<char>(input);
+			auto end = std::istreambuf_iterator<char>();
+			if (it == end) {
+				throw ParsingError("Map parsing error");
+			}
 			for (char c; input >> c && c != '}';) {
 				if (c == ',') {
 					input >> c;
@@ -165,9 +168,6 @@ namespace json {
 				string key = LoadString(input).AsString();
 				input >> c;
 				result.insert({ move(key), LoadNode(input) });
-			}
-			if (result.empty()) {
-				throw ParsingError("Map parsing error");
 			}
 
 			return Node(move(result));

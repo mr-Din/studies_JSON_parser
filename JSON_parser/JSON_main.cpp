@@ -243,6 +243,7 @@ namespace {
         json::Print(Document{ arr }, strm);
         const auto doc = json::Load(strm);
         assert(doc.GetRoot() == arr);
+        std::cout << strm.str();
 
     }
 
@@ -283,4 +284,10 @@ int main() {
         TestErrorHandling();
         MyTest();
         Benchmark();
+        Node arr_empty{ Array{1,Array{},3.3,"bay"s} };
+        assert(LoadJSON("[1,[],3.3,\"bay\"]"s).GetRoot() == arr_empty);
+        assert(LoadJSON(Print(arr_empty)).GetRoot() == arr_empty);
+        Node arr_empty2{ Array{} };
+        assert(LoadJSON("[]"s).GetRoot() == arr_empty2);
+        assert(LoadJSON(Print(arr_empty2)).GetRoot() == arr_empty2);
 }

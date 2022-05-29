@@ -152,7 +152,12 @@ namespace json {
 	}
 	inline void PrintValue(const Dict& dict, std::ostream& out) {
 		out << "{"sv;
+		int i = 0;
 		for (const auto& [key, value] : dict) {
+			if (i > 0) {
+				out << ","s;
+			}
+			++i;
 			PrintNode(key, out);
 			out << ":"sv;
 			PrintNode(value, out);
